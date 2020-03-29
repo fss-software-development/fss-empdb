@@ -3,12 +3,16 @@ package com.fss.empdb.service;
 import com.fss.empdb.domain.Employee;
 import com.fss.empdb.exception.ResourceNotFoundException;
 import com.fss.empdb.repos.EmployeeRepository;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 
+@Log4j2
 @Service
 @Transactional
 public class EmployeeService {
@@ -22,6 +26,8 @@ public class EmployeeService {
     }
 
     public List<Employee> getAllEmployees() {
+        MDC.put("MDCTest", "MDC-Id " + new Random().nextInt());
+        log.debug("Getting all employees");
         return employeeRepository.findAll();
     }
 
