@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,11 +63,69 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    public void createEmployee_success() throws Exception{
+        //arrange
+        Employee emp = testEmployee();
+
+        //act
+        employeeService.createEmployee(emp);
+
+        //assert
+        List<Employee> list = employeeService.getAllEmployees();
+        System.out.println(list);
+    }
+
+    @Test
     public void getAllEmployees_returnsEmployees() throws Exception{
+        //arrange
+        Employee emp = testEmployee();
+        employeeService.createEmployee(emp);
+
+        //act
+        List<Employee> list = employeeService.getAllEmployees();
+
+        //assert
+        System.out.println(list);
+    }
+
+    @Test
+    public void getEmployeeById_returnsEmployee() throws Exception{
+        //arrange
+        Long employeeId = 1L;
 
         Employee emp = testEmployee();
         employeeService.createEmployee(emp);
-        List<Employee> list = employeeService.getAllEmployees();
-        System.out.println(list);
+        //act
+        emp = employeeService.getEmployeeById(employeeId);
+
+        //assert
+        System.out.println(emp);
+    }
+
+    @Test
+    @Transactional
+    public void updateEmployee_success() throws Exception{
+        //arrange
+        Employee emp = testEmployee();
+        employeeService.createEmployee(emp);
+
+        //act
+        emp.setFirstName("updated first name");
+        Employee updatedEmp = employeeService.updateEmployee(emp);
+        //assert
+        System.out.println(updatedEmp.getFirstName());
+    }
+
+    @Test
+    @Transactional
+    public void deleteEmployee_success() throws Exception{
+        //arrange
+        Employee emp = testEmployee();
+        employeeService.createEmployee(emp);
+
+        //act
+        employeeService.deleteEmployee(emp.getEmployeeSqid());
+        //assert
+        System.out.println("Employee Deleted.......");
     }
 }
