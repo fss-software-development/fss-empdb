@@ -1,4 +1,4 @@
-package com.fss.empdb.com.fss.empdb.config;
+package com.fss.empdb.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

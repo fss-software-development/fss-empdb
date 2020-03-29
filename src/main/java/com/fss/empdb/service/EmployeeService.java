@@ -13,6 +13,11 @@ public class EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    public EmployeeService(EmployeeRepository employeeRepository) {
+
+        this.employeeRepository = employeeRepository;
+    }
+
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }

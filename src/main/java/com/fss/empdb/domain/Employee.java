@@ -14,7 +14,11 @@ public class Employee {
             @Column(name="EMPLOYEE_SQID")
     Long employeeSqid;
 
-    public Employee(){}
+    public Employee(){
+        /*
+        default constructor
+         */
+    }
 
     @Column(name="EMPLOYEE_ID")
     String employeeId;
@@ -82,4 +86,13 @@ public class Employee {
     @Column(name="LAST_UPDATE_DATE")
     Date lastUpdDate;
 
+    @Override
+    public String toString() {
+        return  "employeeId:"
+                + employeeId
+                + System.getProperties().getProperty("line.separator")
+                + "employeeName:"
+                + firstName +" " + middleName + " " + lastName
+                ;
+    }
 }
