@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/services/empdb/v1")
 public class EmployeeController {
 
     @Autowired
