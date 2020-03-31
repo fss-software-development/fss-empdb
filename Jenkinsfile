@@ -18,8 +18,15 @@ pipeline {
             }
         }
         stage('Quality Analysis') {
-            def sonarqubeScannerHome = tool name: 'sonar-scanner'
-            sh "${sonarqubeScannerHome}/bin/sonar-scanner"
+           steps {
+                  script {
+                    // requires SonarQube Scanner 2.8+
+                    scannerHome = tool 'sonar-scanner'
+                  }
+                  withSonarQubeEnv('SonarQube Scanner') {
+                    bat "${scannerHome}/bin/sonar-scanner"
+                  }
+                }
         }
     }
 }
