@@ -15,13 +15,10 @@ pipeline {
                 bat 'mvn -B -DskipTests clean package'
             }
         }
-        stage('Sonar') {
-           steps {
-               def scannerHome = tool 'sonar-scanner'
-               withSonarQubeEnv('SonarQube') {
-                   bat "${scannerHome}/bin/sonar-scanner"
-               }
-           }
+        stage('Quality Analysis') {
+            withSonarQubeEnv('sonar-scanner') {
+               bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
+            }
         }
     }
 }
