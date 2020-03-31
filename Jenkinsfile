@@ -15,6 +15,13 @@ pipeline {
                 bat 'mvn -B -DskipTests clean package'
             }
         }
+        stage('Sonar') {
+                    steps {
+                        bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
+                        bat 'c:/Soft/sonarqube/bin/windows-x86-64/StartSonar.bat'
+                        bat 'c:/Soft/sonar-scanner/bin/sonar-scanner.bat'
+                    }
+        }
     }
 }
 
