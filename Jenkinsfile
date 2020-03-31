@@ -1,5 +1,8 @@
 pipeline {
     agent any
+     tools {
+            maven 'Maven 3.6.3'
+        }
     stages {
 
         stage('Clone sources') {
@@ -9,7 +12,7 @@ pipeline {
          }
         stage('Build') {
             steps {
-                bat 'mvn -B -DskipTests clean package'
+                cmd 'mvn -B -DskipTests clean package'
             }
         }
     }
