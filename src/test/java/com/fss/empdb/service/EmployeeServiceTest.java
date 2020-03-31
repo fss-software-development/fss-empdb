@@ -52,6 +52,8 @@ public class EmployeeServiceTest {
         emp.setDesignationId(1L);
         emp.setGrade("M4");
         emp.setPreviousExperience(0);
+        emp.setPrimarySkillId(1L);
+        emp.setReportingManager("Balaji");
         emp.setInsUser(1L);
         emp.setLastUpdUser(1L);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -63,6 +65,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    @Transactional
     public void createEmployee_success() throws Exception{
         //arrange
         Employee emp = testEmployee();
@@ -76,6 +79,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    @Transactional
     public void getAllEmployees_returnsEmployees() throws Exception{
         //arrange
         Employee emp = testEmployee();
@@ -89,6 +93,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    @Transactional
     public void getEmployeeById_returnsEmployee() throws Exception{
         //arrange
         Long employeeId = 1L;
