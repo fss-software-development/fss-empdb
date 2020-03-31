@@ -16,7 +16,7 @@ pipeline {
             }
         }
         stage('Quality Analysis') {
-            withSonarQubeEnv('sonar-scanner') {
+            steps {
                bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
             }
         }
