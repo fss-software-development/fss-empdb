@@ -14,7 +14,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn -B -DskipTests clean package'
+                bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
             }
         }
         stage('Quality Analysis') {
