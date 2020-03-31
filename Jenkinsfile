@@ -18,10 +18,8 @@ pipeline {
             }
         }
         stage('Quality Analysis') {
-         def scannerHome = tool ‘sonar-scanner’;
-         withSonarQubeEnv(‘sonar-scanner’) {
-         bat “${scannerHome}/bin/sonar-scanner”
-         }
+            def sonarqubeScannerHome = tool name: 'sonar-scanner'
+            sh "${sonarqubeScannerHome}/bin/sonar-scanner"
         }
     }
 }
