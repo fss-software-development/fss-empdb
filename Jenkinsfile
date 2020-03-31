@@ -16,11 +16,17 @@ pipeline {
             }
         }
         stage('Sonar') {
-                    steps {
-                        bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
-                        bat 'StartSonar.bat'
-                        bat 'c:/Soft/sonar-scanner/bin/sonar-scanner.bat'
-                    }
+            environment {
+                scannerHome = tool 'sonar-qube-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    bat "${scannerHome}/bin/sonar-scanner"
+                }
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
     }
 }
