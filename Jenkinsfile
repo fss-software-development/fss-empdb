@@ -16,17 +16,12 @@ pipeline {
             }
         }
         stage('Sonar') {
-            environment {
-                scannerHome = tool 'sonar-qube-scanner'
-            }
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    bat "${scannerHome}/bin/sonar-scanner.bat"
-                }
-                timeout(time: 10, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
+           steps {
+               def scannerHome = tool 'sonar-scanner'
+               withSonarQubeEnv('SonarQube') {
+                   sh "${scannerHome}/bin/sonar-scanner"
+               }
+           }
         }
     }
 }
