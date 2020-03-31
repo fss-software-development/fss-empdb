@@ -18,9 +18,10 @@ pipeline {
             }
         }
         stage('Quality Analysis') {
-            steps {
-               bat 'mvn org.jacoco:jacoco-maven-plugin:prepare-agent install'
-            }
+         def scannerHome = tool ‘sonar-scanner’;
+         withSonarQubeEnv(‘sonar-scanner’) {
+         bat “${scannerHome}/bin/sonar-scanner”
+         }
         }
     }
 }
