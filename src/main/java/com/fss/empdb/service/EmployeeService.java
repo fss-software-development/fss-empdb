@@ -1,5 +1,6 @@
 package com.fss.empdb.service;
 
+import com.fss.empdb.constants.ErrorConstants;
 import com.fss.empdb.domain.Employee;
 import com.fss.empdb.exception.ResourceNotFoundException;
 import com.fss.empdb.repos.EmployeeRepository;
@@ -36,12 +37,13 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Long employeeId) {
-        return employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND + employeeId));
     }
 
     public Employee updateEmployee(Employee employee){
         employeeRepository.findById(employee.getEmployeeSqid())
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: "
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND
                         + employee.getEmployeeSqid()));
 
 
@@ -49,7 +51,7 @@ public class EmployeeService {
     }
 
     public void deleteEmployee(Long employeeId){
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND  + employeeId));
 
         employeeRepository.delete(employee);
     }
