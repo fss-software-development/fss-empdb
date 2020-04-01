@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 
 @Log4j2
 @Service
@@ -27,7 +27,7 @@ public class EmployeeService {
     }
 
     public List<Employee> getAllEmployees() {
-        MDC.put("MDCTest", "MDC-Id " + new Random().nextInt());
+        MDC.put("MDCTest", "MDC-Id " + new SecureRandom().nextInt());
         log.debug("Getting all employees");
         return employeeRepository.findAll();
     }
