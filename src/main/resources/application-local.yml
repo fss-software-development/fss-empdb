@@ -3,3 +3,9 @@ spring:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/employee_db
     username: root
     password: test
+  security:
+    user:
+      name: rama
+      password: pass123
+server:
+  port: 8081
