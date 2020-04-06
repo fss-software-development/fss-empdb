@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <!-- This change set defines the initial table definition for the consent service
+  based off https://tideaccount.atlassian.net/wiki/spaces/PAYM/pages/1178271757/Spike+PAYBA-1428+-+Consent+Service+DB -->
+
+
+    <changeSet id="01" author="Rama Prabhu R">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+				CREATE TABLE employee_db.department (
+					  DEPARTMENT_ID INT(11) NOT NULL,
+					  DEPARTMENT_NAME VARCHAR(45) NOT NULL,
+					  DEPARTMENT_HEAD VARCHAR(45) NOT NULL,
+					  INS_USER INT(11) NOT NULL,
+					  INS_DATE TIMESTAMP NOT NULL,
+					  LAST_UPDATE_USER INT(11) NULL,
+					  LAST_UPDATE_DATE TIMESTAMP NULL,
+					  PRIMARY KEY (DEPARTMENT_ID)
+				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
