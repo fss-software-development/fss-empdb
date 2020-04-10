@@ -1,5 +1,6 @@
 package com.fss.empdb.service;
 
+import com.fss.empdb.domain.Department;
 import com.fss.empdb.domain.Employee;
 import com.fss.empdb.repos.EmployeeRepository;
 import com.fss.empdb.service.EmployeeService;
@@ -39,7 +40,9 @@ public class EmployeeServiceTest {
         Employee emp = new Employee();
         emp.setEmployeeSqid(1L);
         emp.setEmployeeId("10453");
-        emp.setDepartmentId(1L);
+        Department dept = new Department();
+        dept.setDepartmentId(1L);
+        emp.setDepartment(dept);
         emp.setAccountId(1L);
         emp.setRegionId(1L);
         emp.setLocationId(1L);
