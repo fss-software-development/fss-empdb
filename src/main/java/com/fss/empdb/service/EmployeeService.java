@@ -1,58 +1,202 @@
 package com.fss.empdb.service;
 
 import com.fss.empdb.constants.ErrorConstants;
-import com.fss.empdb.domain.Employee;
+import com.fss.empdb.domain.*;
 import com.fss.empdb.exception.ResourceNotFoundException;
-import com.fss.empdb.repos.EmployeeRepository;
+import com.fss.empdb.repos.*;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.SecureRandom;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Log4j2
 @Service
 @Transactional
 public class EmployeeService {
 
+
     @Autowired
     EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    @Autowired
+    AccountRepository accountRepository;
 
-        this.employeeRepository = employeeRepository;
-    }
+    @Autowired
+    RegionRepository regionRepository;
+
+    @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
+    DesignationRepository designationRepository;
+
+    @Autowired
+    LocationRepository locationRepository;
+
+    @Autowired
+    ServiceLineRepository serviceLineRepository;
+
+    @Autowired
+    BillableStatusRepository billableStatusRepository;
+
+    @Autowired
+    GradeRepository gradeRepository;
+
+    @Autowired
+    AcademicsRepository academicsRepository;
 
     public List<Employee> getAllEmployees() {
-        MDC.put("MDCTest", "MDC-Id " + new SecureRandom().nextInt());
-        log.debug("Getting all employees");
         return employeeRepository.findAll();
     }
 
-    public Employee createEmployee(Employee employee) {
-        return employeeRepository.save(employee);
-    }
-
     public Employee getEmployeeById(Long employeeId) {
-        return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND + employeeId));
+        return employeeRepository.findById(employeeId).
+                orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND + employeeId));
     }
 
-    public Employee updateEmployee(Employee employee){
-        employeeRepository.findById(employee.getEmployeeSqid())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND
-                        + employee.getEmployeeSqid()));
+    public List<Employee> findByEmp(SearchCriteria emp) {
 
+        return employeeRepository.findAll(new Specification<Employee>() {
+            @Override
+            public Predicate toPredicate(Root<Employee> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-       return employeeRepository.save(employee);
+                List<Predicate> predicates = new ArrayList<>();
+                if (emp.getEmployeeId() != null) {
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("employeeId"), emp.getEmployeeId())));
+                }
+                if (emp.getEmployeeName() != null) {
+                    predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("employeeName"), "%" + emp.getEmployeeName() + "%")));
+                }
+                if (emp.getDesignation() != null) {
+                    Join<Employee, Designation> phoneJoin = root.join("designation");
+                    predicates.add(phoneJoin.in(emp.getDesignation()));
+                }
+                if (emp.getDepartment() != null) {
+                    Join<Employee, Department> phoneJoin = root.join("department");
+                    predicates.add(phoneJoin.in(emp.getDepartment()));
+                }
+                if (emp.getRegion() != null) {
+                    Join<Employee, Region> phoneJoin = root.join("region");
+                    predicates.add(phoneJoin.in(emp.getRegion()));
+                }
+                if (emp.getAccount() != null) {
+                    Join<Employee, Account> phoneJoin = root.join("account");
+                    predicates.add(phoneJoin.in(emp.getAccount()));
+                }
+                if (emp.getServiceLine() != null) {
+                    Join<Employee, ServiceLine> phoneJoin = root.join("serviceLine");
+                    predicates.add(phoneJoin.in(emp.getServiceLine()));
+                }
+                if (emp.getBillableStatus() != null) {
+                    Join<Employee, BillableStatus> phoneJoin = root.join("billableStatus");
+                    predicates.add(phoneJoin.in(emp.getBillableStatus()));
+                }
+                if (emp.getLocation() != null) {
+                    Join<Employee, Location> phoneJoin = root.join("location");
+                    predicates.add(phoneJoin.in(emp.getLocation()));
+                }
+                if (emp.getGrade() != null) {
+                    Join<Employee, Grade> phoneJoin = root.join("grade");
+                    predicates.add(phoneJoin.in(emp.getGrade()));
+                }
+                if (emp.getAcademics() != null) {
+                    Join<Employee, Academics> phoneJoin = root.join("academics");
+                    predicates.add(phoneJoin.in(emp.getAcademics()));
+                }
+                log.info("Search filter Size :" + predicates.size());
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        });
+    }
+
+    public Employee createOrUpdateEmployee(Employee employee) {
+        try {
+            if (employee.getEmployeeSqId() != null) {
+
+                Optional<Employee> emp = employeeRepository.findById(employee.getEmployeeSqId());
+                Employee empEntity = emp.get();
+
+                Optional<Account> account = accountRepository.findById(employee.getAccount().getAccountId());
+                Account accountEntity =account.get();
+
+                Optional<Region> region = regionRepository.findById(employee.getRegion().getRegionId());
+                Region regionEntity =region.get();
+
+                Optional<Location> location = locationRepository.findById(employee.getLocation().getLocationId());
+                Location locationEntity =location.get();
+
+                Optional<Grade> grade = gradeRepository.findById(employee.getGrade().getGradeId());
+                Grade gradeEntity =grade.get();
+
+                Optional<Designation> designation = designationRepository.findById(employee.getDesignation().getDesignationId());
+                Designation designationEntity =designation.get();
+
+                Optional<BillableStatus> billablestatus = billableStatusRepository.findById(employee.getBillableStatus().getBillableStatusId());
+                BillableStatus billablestatusEntity =billablestatus.get();
+
+                Optional<ServiceLine> serviceline = serviceLineRepository.findById(employee.getServiceLine().getServiceLineId());
+                ServiceLine servicelineEntity =serviceline.get();
+
+                Optional<Academics> academics = academicsRepository.findById(employee.getAcademics().getAcademicsId());
+                Academics academicsEntity =academics.get();
+
+                Optional<Department> department = departmentRepository.findById(employee.getDepartment().getDepartmentId());
+                Department departmentEntity =department.get();
+
+                empEntity.setEmployeeSqId(employee.getEmployeeSqId());
+                empEntity.setEmployeeId(employee.getEmployeeId());
+                empEntity.setDepartment(departmentEntity);
+                empEntity.setAccount(accountEntity);
+                empEntity.setRegion(regionEntity);
+                empEntity.setLocation(locationEntity);
+                empEntity.setEmployeeName(employee.getEmployeeName());
+                empEntity.setMobileNum(employee.getMobileNum());
+                empEntity.setEmailId(employee.getEmailId());
+                empEntity.setGrade(gradeEntity);
+                empEntity.setDesignation(designationEntity);
+                empEntity.setReportingManager(employee.getReportingManager());
+                empEntity.setPreviousExp(employee.getPreviousExp());
+                empEntity.setJoiningDate(employee.getJoiningDate());
+                empEntity.setBillableStatus(billablestatusEntity);
+                empEntity.setServiceLine(servicelineEntity);
+                empEntity.setActivityName(employee.getActivityName());
+                empEntity.setPrimarySkillId(employee.getPrimarySkillId());
+                empEntity.setExperienceGaps(employee.getExperienceGaps());
+                empEntity.setAcademics(academicsEntity);
+                empEntity.setInsUser(Long.valueOf(1));  //  Change is required
+                empEntity.setInsDate( new Date());
+                empEntity.setLastUpdateUser(Long.valueOf(1));  //  Change is required
+                empEntity.setLastUpdateDate(new Date());
+                empEntity = employeeRepository.save(empEntity);
+                return empEntity;
+            } else {
+                log.info("----------------------- Save -----------------------");
+                employee.setInsUser(Long.valueOf(1));
+                employee.setLastUpdateUser(Long.valueOf(1));
+                employee.setInsDate(new Date());
+                employee.setLastUpdateDate(new Date());
+                employee = employeeRepository.save(employee);
+                return employee;
+            }
+        } catch (Exception e) {
+            log.info(e);
+        }
+        return null;
     }
 
     public void deleteEmployee(Long employeeId){
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND  + employeeId));
-
         employeeRepository.delete(employee);
     }
+
 }

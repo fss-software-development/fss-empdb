@@ -15,9 +15,9 @@
 					  DEPARTMENT_NAME VARCHAR(45) NOT NULL,
 					  DEPARTMENT_HEAD VARCHAR(45) NOT NULL,
 					  INS_USER INT(11) NOT NULL,
-					  INS_DATE TIMESTAMP NOT NULL,
+					  INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 					  LAST_UPDATE_USER INT(11) NULL,
-					  LAST_UPDATE_DATE TIMESTAMP NULL,
+					  LAST_UPDATE_DATE TIMESTAMP,
 					  PRIMARY KEY (DEPARTMENT_ID)
 				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
@@ -27,32 +27,39 @@
     <changeSet id="02" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
-		     CREATE TABLE IF NOT EXISTS employee_db.account (
-                ACCOUNT_ID INT(11) NOT NULL,
-                ACCOUNT_NAME VARCHAR(45) NOT NULL,
+			 CREATE TABLE IF NOT EXISTS employee_db.region (
+				REGION_ID INT(11) NOT NULL,
+				REGION_NAME VARCHAR(45) NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
-				PRIMARY KEY (ACCOUNT_ID)
-			 )  ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
-          ]]>
+				LAST_UPDATE_DATE TIMESTAMP,
+				PRIMARY KEY (REGION_ID)
+			 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+           ]]>
         </sql>
     </changeSet>
 
     <changeSet id="03" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
-			 CREATE TABLE IF NOT EXISTS employee_db.region (
-				REGION_ID INT(11) NOT NULL,
-				REGION_NAME VARCHAR(45) NOT NULL,
+		     CREATE TABLE IF NOT EXISTS employee_db.account (
+                ACCOUNT_ID INT(11) NOT NULL AUTO_INCREMENT,
+                ACCOUNT_NAME VARCHAR(45) NOT NULL,
+                REGION_ID INT(11) NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
-				PRIMARY KEY (REGION_ID)
-			 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
-           ]]>
+				LAST_UPDATE_DATE TIMESTAMP,
+				PRIMARY KEY (ACCOUNT_ID),
+				INDEX fk_account_region1_idx (REGION_ID ASC) VISIBLE,
+					CONSTRAINT fk_account_region1
+					FOREIGN KEY (REGION_ID)
+					REFERENCES employee_db.region (REGION_ID)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION
+			 )  ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+          ]]>
         </sql>
     </changeSet>
 
@@ -63,9 +70,9 @@
 				LOCATION_ID INT(11) NOT NULL,
 				LOCATION_NAME VARCHAR(45) NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				PRIMARY KEY (LOCATION_ID)
 			  ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
@@ -79,9 +86,9 @@
 				SKILL_ID INT(11) NOT NULL,
 				SKILL_NAME VARCHAR(45) NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				PRIMARY KEY (SKILL_ID)
 			  ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
@@ -95,9 +102,9 @@
 				DESIGNATION_ID INT(11) NOT NULL,
 				DESIGNATION_NAME VARCHAR(255) NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				PRIMARY KEY (DESIGNATION_ID)
 			 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
@@ -114,7 +121,7 @@
 				EMAIL VARCHAR(255) NOT NULL,
 				PASSWORD VARCHAR(32) NOT NULL,
 				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				LAST_UPDATE_DATE TIMESTAMP NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				UNIQUE INDEX EMAIL_UNIQUE (EMAIL ASC) VISIBLE,
 				UNIQUE INDEX USER_ID_UNIQUE (USER_ID ASC) VISIBLE,
 				PRIMARY KEY (USER_SQID)
@@ -139,32 +146,91 @@
     <changeSet id="09" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
+		    CREATE TABLE IF NOT EXISTS employee_db.billable_status (
+                BILLABLE_STATUS_ID INT NOT NULL,
+                BILLABLE_STATUS VARCHAR(255) NOT NULL,
+            PRIMARY KEY (BILLABLE_STATUS_ID)
+            ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="10" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+		        CREATE TABLE IF NOT EXISTS employee_db.grade (
+                    GRADE_ID INT NOT NULL,
+                    GRADE_NAME VARCHAR(45) NOT NULL,
+                    PRIMARY KEY (GRADE_ID)
+                 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="11" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+	           	CREATE TABLE IF NOT EXISTS employee_db.academics (
+                    ACADEMICS_ID INT NOT NULL,
+                    ACADEMICS_NAME VARCHAR(45) NOT NULL,
+                    PRIMARY KEY (ACADEMICS_ID)
+                  ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="12" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+		        CREATE TABLE IF NOT EXISTS employee_db.project_tagging (
+                     PROJECT_TAGGING_ID INT NOT NULL,
+                     PROJECT_TAGGING VARCHAR(45) NOT NULL,
+                     PRIMARY KEY (PROJECT_TAGGING_ID)
+                 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="13" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+		        CREATE TABLE IF NOT EXISTS employee_db.role (
+                     ROLE_ID INT NOT NULL,
+                     ROLE_NAME VARCHAR(45) NOT NULL,
+                     PRIMARY KEY (ROLE_ID)
+                    )  ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="14" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
 			  CREATE TABLE IF NOT EXISTS employee_db.employee (
-				EMPLOYEE_SQID INT(11) NOT NULL,
+				EMPLOYEE_SQID INT(11) NOT NULL AUTO_INCREMENT,
 				EMPLOYEE_ID VARCHAR(10) NOT NULL,
 				DEPARTMENT_ID INT(11) NOT NULL,
 				ACCOUNT_ID INT(11) NOT NULL,
 				REGION_ID INT(11) NOT NULL,
 				LOCATION_ID INT(11) NOT NULL,
-				FIRST_NAME VARCHAR(45) NOT NULL,
-				MIDDLE_NAME VARCHAR(45) NULL DEFAULT NULL,
-				LAST_NAME VARCHAR(45) NOT NULL,
+				EMPLOYEE_NAME VARCHAR(45) NOT NULL,
 				MOBILE_NUM INT(11) NULL DEFAULT NULL,
 				EMAIL_ID VARCHAR(45) NOT NULL,
-				GRADE VARCHAR(45) NOT NULL,
+				GRADE_ID INT(11) NOT NULL,
 				DESIGNATION_ID INT(11) NOT NULL,
 				REPORTING_MANAGER VARCHAR(45) NULL DEFAULT NULL,
 				PREVIOUS_EXP INT(3) NULL DEFAULT NULL,
 				JOINING_DATE DATE NOT NULL,
-				BILL_OR_NO_BILL VARCHAR(45) NOT NULL,
-				PRIMARY_SKILL INT(11) NULL,
-				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
-				LAST_UPDATE_USER INT(11) NULL DEFAULT NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL DEFAULT NULL,
+				BILLABLE_STATUS_ID INT NOT NULL,
 				SERVICE_LINE_ID INT(11) NULL,
 				ACTIVITY_NAME VARCHAR(45) NULL,
-				EXPERIENCE_GAPS TINYINT NULL,
+				PRIMARY_SKILL INT(11) NULL,
+				EXPERIENCE_GAPS INT(11) NULL,
+				ACADEMICS_ID INT NOT NULL,
+				INS_USER INT(11) NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				LAST_UPDATE_USER INT(11) NULL DEFAULT NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				PRIMARY KEY (EMPLOYEE_SQID),
 				UNIQUE INDEX EMPLOYEE_ID_UNIQUE (EMPLOYEE_ID ASC) VISIBLE,
 				INDEX fk_employee_department_idx (DEPARTMENT_ID ASC) VISIBLE,
@@ -177,6 +243,9 @@
 				INDEX fk_employee_user_idx (INS_USER ASC) VISIBLE,
 				INDEX fk_employee_user2_idx (LAST_UPDATE_USER ASC) VISIBLE,
 				INDEX fk_employee_serviceline_idx (SERVICE_LINE_ID ASC) VISIBLE,
+				INDEX fk_employee_billable_status1_idx (BILLABLE_STATUS_ID ASC) VISIBLE,
+				INDEX fk_employee_grade1_idx (GRADE_ID ASC) VISIBLE,
+				INDEX fk_employee_academics1_idx (ACADEMICS_ID ASC) VISIBLE,
 				CONSTRAINT fk_employee_department
 					FOREIGN KEY (DEPARTMENT_ID)
 					REFERENCES employee_db.department (DEPARTMENT_ID)
@@ -221,31 +290,52 @@
 					FOREIGN KEY (SERVICE_LINE_ID)
 					REFERENCES employee_db.service_line (SERVICE_LINE_ID)
 					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_employee_billable_status1
+					FOREIGN KEY (BILLABLE_STATUS_ID)
+					REFERENCES employee_db.billable_status (BILLABLE_STATUS_ID)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_employee_grade1
+					FOREIGN KEY (GRADE_ID)
+					REFERENCES employee_db.grade (GRADE_ID)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_employee_academics1
+					FOREIGN KEY (ACADEMICS_ID)
+					REFERENCES employee_db.academics (ACADEMICS_ID)
+					ON DELETE NO ACTION
 					ON UPDATE NO ACTION
 				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
         </sql>
     </changeSet>
 
-    <changeSet id="10" author="Rakesh Mhaske">
+    <changeSet id="15" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
 			  CREATE TABLE IF NOT EXISTS employee_db.project (
-				PROJECT_ID INT(11) NOT NULL,
+				PROJECT_ID INT(11) NOT NULL AUTO_INCREMENT,
 				DEPARTMENT_ID INT(11) NOT NULL,
+				ACCOUNT_ID INT(11) NOT NULL,
+                REGION_ID INT(11) NOT NULL,
+                PROJECT_TAGGING_ID INT NOT NULL,
 				PROJECT_NAME VARCHAR(45) NOT NULL,
 				PROJECT_MANAGER VARCHAR(45) NOT NULL,
 				PROJECT_STATUS VARCHAR(45) NOT NULL,
-				ACCOUNT_ID INT(11) NOT NULL,
+				PROJECT_START_DATE TIMESTAMP,
+				PROJECT_END_DATE TIMESTAMP,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				LAST_UPDATE_USER INT(11) NULL DEFAULT NULL,
-				LAST_UPDATE_DATE TIMESTAMP NULL DEFAULT NULL,
+				LAST_UPDATE_DATE TIMESTAMP,
 				PRIMARY KEY (PROJECT_ID),
 				INDEX fk_project_department_idx (DEPARTMENT_ID ASC) VISIBLE,
 				INDEX fk_project_user_idx (INS_USER ASC) VISIBLE,
 				INDEX fk_project_user2_idx (LAST_UPDATE_USER ASC) VISIBLE,
 				INDEX fk_project_account_idx (ACCOUNT_ID ASC) VISIBLE,
+				INDEX fk_project_region1_idx (REGION_ID ASC) VISIBLE,
+				INDEX fk_project_project_tagging1_idx (PROJECT_TAGGING_ID ASC) VISIBLE,
 				CONSTRAINT fk_project_department
 					FOREIGN KEY (DEPARTMENT_ID)
 					REFERENCES employee_db.department (DEPARTMENT_ID)
@@ -265,13 +355,23 @@
 					FOREIGN KEY (ACCOUNT_ID)
 					REFERENCES employee_db.account (ACCOUNT_ID)
 					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+			    CONSTRAINT fk_project_region1
+					FOREIGN KEY (REGION_ID)
+					REFERENCES employee_db.region (REGION_ID)
+					ON DELETE NO ACTION
+					ON UPDATE NO ACTION,
+				CONSTRAINT fk_project_project_tagging1
+					FOREIGN KEY (PROJECT_TAGGING_ID)
+					REFERENCES employee_db.project_tagging (PROJECT_TAGGING_ID)
+					ON DELETE NO ACTION
 					ON UPDATE NO ACTION
 				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
             ]]>
         </sql>
     </changeSet>
 
-    <changeSet id="11" author="Rakesh Mhaske">
+    <changeSet id="16" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
 			  CREATE TABLE IF NOT EXISTS employee_db.employee_project (
@@ -281,9 +381,7 @@
 				START_DATE DATE NOT NULL,
 				END_DATE DATE NOT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
-				UNIQUE INDEX emp_sqid_UNIQUE (EMPLOYEE_SQID ASC) VISIBLE,
-				UNIQUE INDEX project_sqid_UNIQUE (PROJECT_ID ASC) VISIBLE,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY (EMPLOYEE_PROJECT_SQID),
 				CONSTRAINT EMP_PROJECT_EMPID_FK
 					FOREIGN KEY (EMPLOYEE_SQID)
@@ -300,7 +398,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="12" author="Rakesh Mhaske">
+    <changeSet id="17" author="Rakesh Mhaske">
         <sql dbms="mysql" splitStatements="true" stripComments="true">
             <![CDATA[
 			  CREATE TABLE IF NOT EXISTS employee_db.employee_skill (
@@ -310,7 +408,7 @@
 				CERTIFIED TINYINT NOT NULL,
 				USED_IN_PROJECT TINYINT NULL,
 				INS_USER INT(11) NOT NULL,
-				INS_DATE TIMESTAMP NOT NULL,
+				INS_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				INDEX fk_employee_has_employee_skill_employee_skill1_idx (SKILL_ID ASC) VISIBLE,
 				INDEX fk_employee_has_employee_skill_employee1_idx (EMPLOYEE_SQID ASC) VISIBLE,
 				PRIMARY KEY (EMPLOYEE_SKILL_SQID),
@@ -329,6 +427,65 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="18" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+			 CREATE TABLE IF NOT EXISTS employee_db.employee_role (
+               EMPLOYEE_ROLE_SQID INT NOT NULL,
+               EMPLOYEE_SQID INT(11) NOT NULL,
+               ROLE_ID INT NOT NULL,
+               ROLE_TYPE VARCHAR(45) NOT NULL,
+               PRIMARY KEY (EMPLOYEE_SQID),
+               INDEX fk_employee_role_role1_idx (ROLE_ID ASC) VISIBLE,
+               INDEX fk_employee_role_employee1_idx (EMPLOYEE_SQID ASC) VISIBLE,
+                CONSTRAINT fk_employee_role_employee1
+                    FOREIGN KEY (EMPLOYEE_SQID)
+                    REFERENCES employee_db.employee (EMPLOYEE_SQID)
+                    ON DELETE NO ACTION
+                    ON UPDATE NO ACTION,
+                CONSTRAINT fk_employee_role_role1
+                    FOREIGN KEY (ROLE_ID)
+                    REFERENCES employee_db.role (ROLE_ID)
+                    ON DELETE NO ACTION
+                    ON UPDATE NO ACTION
+				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
 
-
+    <changeSet id="33" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+			CREATE TABLE IF NOT EXISTS employee_db.tools (
+                 TOOL_ID INT NOT NULL,
+                 TOOL_NAME VARCHAR(45) NOT NULL,
+                 PRIMARY KEY (TOOL_ID)
+				) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="34" author="Rakesh Mhaske">
+        <sql dbms="mysql" splitStatements="true" stripComments="true">
+            <![CDATA[
+		    CREATE TABLE IF NOT EXISTS employee_db.employee_tools (
+                EMPLOYEE_TOOL_SQID INT NOT NULL,
+                EMPLOYEE_SQID INT(11) NOT NULL,
+                TOOL_ID INT NOT NULL,
+                PRIMARY KEY (EMPLOYEE_TOOL_SQID),
+                INDEX fk_employee_tools_tools1_idx (TOOL_ID ASC) VISIBLE,
+                INDEX fk_employee_tools_employee1_idx (EMPLOYEE_SQID ASC) VISIBLE,
+             CONSTRAINT fk_employee_tools_employee1
+                     FOREIGN KEY (EMPLOYEE_SQID)
+                     REFERENCES employee_db_test.employee (EMPLOYEE_SQID)
+                     ON DELETE NO ACTION
+                     ON UPDATE NO ACTION,
+            CONSTRAINT fk_employee_has_tools_tools1
+                     FOREIGN KEY (TOOL_ID)
+                     REFERENCES employee_db_test.tools (TOOL_ID)
+                     ON DELETE NO ACTION
+                     ON UPDATE NO ACTION
+                     ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+            ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

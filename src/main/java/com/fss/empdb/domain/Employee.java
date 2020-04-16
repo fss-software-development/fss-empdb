@@ -1,97 +1,140 @@
 package com.fss.empdb.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.Date;
+
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Employee {
+@Table(name = "employee")
+@XmlRootElement
+@EqualsAndHashCode
+
+public class Employee implements Serializable {
+
     @Id
-            @Column(name="EMPLOYEE_SQID")
-    Long employeeSqid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "EMPLOYEE_SQID")
+    Long employeeSqId;
 
-    public Employee(){
-        /*
-        default constructor
-         */
-    }
+    @Column(name = "EMPLOYEE_ID")
+    Long employeeId;
 
-    @Column(name="EMPLOYEE_ID",nullable = false)
-    String employeeId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "DEPARTMENT_ID")
+    private Department department;
 
-    @Column(name="DEPARTMENT_SQID",nullable = false)
-   Long departmentId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ACCOUNT_ID")
+    private Account account;
 
-    @Column(name="ACCOUNT_ID",nullable = false)
-    Long accountId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "REGION_ID")
+    private Region region;
 
-    @Column(name="REGION_ID",nullable = false)
-    Long regionId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "LOCATION_ID")
+    private Location location;
 
-    @Column(name="LOCATION_ID",nullable = false)
-    Long locationId;
+    @Column(name = "EMPLOYEE_NAME", nullable = false)
+    String employeeName;
 
-   @Column(name="FIRST_NAME",nullable = false)
-    String firstName;
+    @Column(name = "MOBILE_NUM", nullable = false)
+    Long mobileNum;
 
- @Column(name="MIDDLE_NAME")
-    String middleName;
-
- @Column(name="LAST_NAME",nullable = false)
-    String lastName;
-
- @Column(name="MOBILE_NUM",nullable = false)
-    String mobileNumber;
-
- @Column(name="EMAIL_ID",nullable = false)
+    @Column(name = "EMAIL_ID", nullable = false)
     String emailId;
 
- @Column(name="GRADE",nullable = false)
-    String grade;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "GRADE_ID")
+    private Grade grade;
 
- @Column(name="DESIGNATION_ID",nullable = false)
-    Long designationId;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "DESIGNATION_ID")
+    private Designation designation;
 
- @Column(name="REPORTING_MANAGER",nullable = false)
+    @Column(name = "REPORTING_MANAGER", nullable = false)
     String reportingManager;
 
- @Column(name="PREVIOUS_EXP",nullable = false)
-    Integer previousExperience;
+    @Column(name = "PREVIOUS_EXP", nullable = false)
+    Long previousExp;
 
     @Temporal(TemporalType.DATE)
-    @Column(name="JOINING_DATE",nullable = false)
+    @Column(name = "JOINING_DATE", nullable = false)
     Date joiningDate;
 
- @Column(name="BILL_OR_NO_BILL",nullable = false)
-    String billNoBill;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "BILLABLE_STATUS_ID")
+    private BillableStatus billableStatus;
 
- @Column(name="PRIMARY_SKILL",nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "SERVICE_LINE_ID")
+    private ServiceLine serviceLine;
+
+    @Column(name = "ACTIVITY_NAME", nullable = false)
+    String activityName;
+
+    @Column(name = "EXPERIENCE_GAPS", nullable = false)
+    Long experienceGaps;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ACADEMICS_ID")
+    private Academics academics;
+
+    @Column(name = "INS_USER",nullable = true)
+    private Long insUser;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "INS_DATE",nullable = true)
+    private Date insDate;
+
+    @Column(name = "LAST_UPDATE_USER",nullable = true)
+    private Long lastUpdateUser;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "LAST_UPDATE_DATE",nullable = true)
+    private Date lastUpdateDate;
+
+    @JsonIgnore
+    @Column(name="PRIMARY_SKILL")
     Long primarySkillId;
-
- @Column(name="INS_USER",nullable = false)
-    Long insUser;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="INS_DATE",nullable = false)
-    Date insDate;
-
- @Column(name="LAST_UPDATE_USER")
-    Long lastUpdUser;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="LAST_UPDATE_DATE")
-    Date lastUpdDate;
 
     @Override
     public String toString() {
-        return  "Employee[employeeId="
-                + employeeId
-                + ", firstName= "
-                + firstName +", middleName= " + middleName + ", lastName= " + lastName
-                + "]";
+        return "Employee{" +
+                "employeeSqId=" + employeeSqId +
+                ", employeeId=" + employeeId +
+                ", department=" + department +
+                ", account=" + account +
+                ", region=" + region +
+                ", location=" + location +
+                ", employeeName='" + employeeName + '\'' +
+                ", mobileNum=" + mobileNum +
+                ", emailId='" + emailId + '\'' +
+                ", grade=" + grade +
+                ", designation=" + designation +
+                ", reportingManager='" + reportingManager + '\'' +
+                ", previousExp=" + previousExp +
+                ", joiningDate=" + joiningDate +
+                ", billableStatus=" + billableStatus +
+                ", serviceLine=" + serviceLine +
+                ", activityName='" + activityName + '\'' +
+                ", experienceGaps=" + experienceGaps +
+                ", academics=" + academics +
+                ", insUser=" + insUser +
+                ", insDate=" + insDate +
+                ", lastUpdateUser=" + lastUpdateUser +
+                ", lastUpdateDate=" + lastUpdateDate +
+                '}';
     }
+
 }
