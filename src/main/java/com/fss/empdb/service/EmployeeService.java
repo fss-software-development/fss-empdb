@@ -11,6 +11,7 @@ import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,39 +78,39 @@ public class EmployeeService {
                 if (emp.getEmployeeName() != null) {
                     predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("employeeName"), "%" + emp.getEmployeeName() + "%")));
                 }
-                if (emp.getDesignation() != null) {
+                if (emp.getDesignation().length > 0) {
                     Join<Employee, Designation> phoneJoin = root.join("designation");
                     predicates.add(phoneJoin.in(emp.getDesignation()));
                 }
-                if (emp.getDepartment() != null) {
+                if (emp.getDepartment().length > 0) {
                     Join<Employee, Department> phoneJoin = root.join("department");
                     predicates.add(phoneJoin.in(emp.getDepartment()));
                 }
-                if (emp.getRegion() != null) {
+                if (emp.getRegion().length > 0) {
                     Join<Employee, Region> phoneJoin = root.join("region");
                     predicates.add(phoneJoin.in(emp.getRegion()));
                 }
-                if (emp.getAccount() != null) {
+                if (emp.getAccount().length > 0l) {
                     Join<Employee, Account> phoneJoin = root.join("account");
                     predicates.add(phoneJoin.in(emp.getAccount()));
                 }
-                if (emp.getServiceLine() != null) {
+                if (emp.getServiceLine().length > 0) {
                     Join<Employee, ServiceLine> phoneJoin = root.join("serviceLine");
                     predicates.add(phoneJoin.in(emp.getServiceLine()));
                 }
-                if (emp.getBillableStatus() != null) {
+                if (emp.getBillableStatus().length > 0) {
                     Join<Employee, BillableStatus> phoneJoin = root.join("billableStatus");
                     predicates.add(phoneJoin.in(emp.getBillableStatus()));
                 }
-                if (emp.getLocation() != null) {
+                if (emp.getLocation().length > 0) {
                     Join<Employee, Location> phoneJoin = root.join("location");
                     predicates.add(phoneJoin.in(emp.getLocation()));
                 }
-                if (emp.getGrade() != null) {
+                if (emp.getGrade().length > 0) {
                     Join<Employee, Grade> phoneJoin = root.join("grade");
                     predicates.add(phoneJoin.in(emp.getGrade()));
                 }
-                if (emp.getAcademics() != null) {
+                if (emp.getAcademics().length > 0) {
                     Join<Employee, Academics> phoneJoin = root.join("academics");
                     predicates.add(phoneJoin.in(emp.getAcademics()));
                 }
@@ -127,31 +128,31 @@ public class EmployeeService {
                 Employee empEntity = emp.get();
 
                 Optional<Account> account = accountRepository.findById(employee.getAccount().getAccountId());
-                Account accountEntity =account.get();
+                Account accountEntity = account.get();
 
                 Optional<Region> region = regionRepository.findById(employee.getRegion().getRegionId());
-                Region regionEntity =region.get();
+                Region regionEntity = region.get();
 
                 Optional<Location> location = locationRepository.findById(employee.getLocation().getLocationId());
-                Location locationEntity =location.get();
+                Location locationEntity = location.get();
 
                 Optional<Grade> grade = gradeRepository.findById(employee.getGrade().getGradeId());
-                Grade gradeEntity =grade.get();
+                Grade gradeEntity = grade.get();
 
                 Optional<Designation> designation = designationRepository.findById(employee.getDesignation().getDesignationId());
-                Designation designationEntity =designation.get();
+                Designation designationEntity = designation.get();
 
                 Optional<BillableStatus> billablestatus = billableStatusRepository.findById(employee.getBillableStatus().getBillableStatusId());
-                BillableStatus billablestatusEntity =billablestatus.get();
+                BillableStatus billablestatusEntity = billablestatus.get();
 
                 Optional<ServiceLine> serviceline = serviceLineRepository.findById(employee.getServiceLine().getServiceLineId());
-                ServiceLine servicelineEntity =serviceline.get();
+                ServiceLine servicelineEntity = serviceline.get();
 
                 Optional<Academics> academics = academicsRepository.findById(employee.getAcademics().getAcademicsId());
-                Academics academicsEntity =academics.get();
+                Academics academicsEntity = academics.get();
 
                 Optional<Department> department = departmentRepository.findById(employee.getDepartment().getDepartmentId());
-                Department departmentEntity =department.get();
+                Department departmentEntity = department.get();
 
                 empEntity.setEmployeeSqId(employee.getEmployeeSqId());
                 empEntity.setEmployeeId(employee.getEmployeeId());
@@ -174,7 +175,7 @@ public class EmployeeService {
                 empEntity.setExperienceGaps(employee.getExperienceGaps());
                 empEntity.setAcademics(academicsEntity);
                 empEntity.setInsUser(Long.valueOf(1));  //  Change is required
-                empEntity.setInsDate( new Date());
+                empEntity.setInsDate(new Date());
                 empEntity.setLastUpdateUser(Long.valueOf(1));  //  Change is required
                 empEntity.setLastUpdateDate(new Date());
                 empEntity = employeeRepository.save(empEntity);
@@ -194,8 +195,8 @@ public class EmployeeService {
         return null;
     }
 
-    public void deleteEmployee(Long employeeId){
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND  + employeeId));
+    public void deleteEmployee(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException(ErrorConstants.EMPLOYEE_NOT_FOUND + employeeId));
         employeeRepository.delete(employee);
     }
 
