@@ -5,6 +5,9 @@ import com.fss.empdb.domain.SearchCriteria;
 import com.fss.empdb.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fss.empdb.dto.EmployeeCriteria;
+import com.fss.empdb.service.EmployeeService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @CrossOrigin()
 @RestController
-@RequestMapping("/services/empdb/v1")
+@RequestMapping("/employees")
 public class EmployeeController {
     private static Logger log = LoggerFactory.getLogger(EmployeeController.class);
 
@@ -30,8 +34,8 @@ public class EmployeeController {
 
     //Get Employee Details By Id - View Case
     @GetMapping("/get-all-employee/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable(value = "id") Long employeeId) {
-        return ResponseEntity.ok().body(employeeService.getEmployeeById(employeeId));
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        return ResponseEntity.ok().body(employeeService.getAllEmployees());
     }
 
     //Get Employees By Search Criteria
@@ -49,9 +53,8 @@ public class EmployeeController {
 
     //Delete Employee
     @DeleteMapping("/emp-delete/{id}")
-    public HttpStatus deleteEmployee(@PathVariable(value = "id") Long employeeId){
-        employeeService.deleteEmployee(employeeId);
-        return HttpStatus.OK;
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
+        return ResponseEntity.ok().body(employeeService.createEmployee(employee));
     }
 
 

@@ -1,4 +1,4 @@
-server:
-  servlet:
-    context-path: /empdb
-
+spring:
+  mvc:
+    servlet:
+      path: /empdb/services/empdb/v1

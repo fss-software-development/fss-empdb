@@ -1,5 +1,6 @@
 package com.fss.empdb.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -53,24 +55,6 @@ public class Department implements Serializable {
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Employee> employees;
-//    @XmlTransient
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "department")
-//    private Collection<Employee> employeeCollection;
-
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeeSqId")
-//    private Collection<Employee> employees;
-
-//    @OneToMany(cascade={CascadeType.ALL},mappedBy="department")
-//    private Set<Employee> employees;
-
-//    @JoinColumn(name = "department_d", referencedColumnName = "EMPLOYEE_SQID")
-//    @ManyToOne(optional = false)
-//    private Employee emp;
-
-//    @OneToMany
-//    @JoinColumn(name = "EMPLOYEE_SQID")
-//    private Employee emp;
 
     @Override
     public String toString() {
@@ -84,4 +68,5 @@ public class Department implements Serializable {
                 ", lastUpdateDate=" + lastUpdateDate +
                 '}';
     }
+
 }
